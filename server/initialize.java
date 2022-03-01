@@ -27,7 +27,8 @@
             }
         });
 
-        Runtime.getRuntime().addShutdownHook(new ShutDownThread()); /* shutdown hook allows the created ShutDownThread to be run prior to server shutting down */
+        Runtime.getRuntime().addShutdownHook(new ShutDownThread()); /* shutdown hook allows the created ShutDownThread 
+                                                                    to be run prior to server shutting down (see below ShutDownThread class)*/
 
         /*
          * Uncomment to have autoConnect enabled at startup
@@ -35,4 +36,17 @@
 //        autoConnectCheckBox.setSelected(true);
 //        displayState(ConnectionDisplayState.WAITING);
 //        connect();
+    }
+
+class ShutDownThread extends Thread {
+
+        @Override
+        public void run() {
+            if (socket != null) { 
+                if (socket.debugFlagIsSet(Constants.instance().DEBUG_STATUS)) {
+                    LOGGER.info("ShutdownHook: Shutting down Server Socket"); /* adds info to LOGGER (see https://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html) */
+                }
+                socket.shutdown(); /* shuts down server */
+            }
+        }
     }
